@@ -9,6 +9,10 @@
 			"limit":5
 		};
 
+		var treatPriceString = function(el){
+			return parseFloat(el.html().replace('.','').replace('R$','').replace(',','.').trim());
+		}
+
 		var settings = $.extend( {}, defaults, options );
 
 		return this.each(function() {
@@ -18,15 +22,15 @@
 			{
 				if($('body').hasClass('produto'))
 				{
-					var precode = parseFloat($('body').find('.skuListPrice').html().replace('R$','').replace(',','.').trim());
-					var precopor = parseFloat($('body').find('.skuBestPrice').html().replace('R$','').replace(',','.').trim());
+					var precode = treatPriceString($('body').find('.skuListPrice'));
+					var precopor = treatPriceString($('body').find('.skuBestPrice'));
 					var desconto = 0;
 					if(precopor < precode)
 					{
 						if($('div.apresentacao').find('.flag-porcentagem-desconto').size() == 0)
 						{
 							desconto = parseInt(100-(100*precopor/precode));
-							if(desconto >= setting.limit)
+							if(desconto >= settings.limit)
 							{
 								$('div.apresentacao').append('<span class="flag-porcentagem-desconto">'+desconto+''+settings.productPageText+'</span>')
 							}
@@ -39,8 +43,8 @@
 				if(!($('body').hasClass('produto')))
 				{
 					$('.prateleira li:not(".helperComplement")').each(function(){
-						var precode = parseFloat($(this).find('span.flag-preco-de').html().replace('R$','').replace(',','.').trim());
-						var precopor = parseFloat($(this).find('span.flag-preco-por').html().replace('R$','').replace(',','.').trim());
+						var precode = treatPriceString($(this).find('span.flag-preco-de'));
+						var precopor = treatPriceString($(this).find('span.flag-preco-por'));
 						var desconto = 0;
 						var el = $(this);
 						if(precopor < precode)
